@@ -20,10 +20,36 @@ def add_quest(side_quest):
 
 
 def list_quest(side_quest):
-    pass
+    quests = questable.get_quests(side_quest)
+    if quests is False:
+        cprint("Invalid Token!", RED)
+        sys.exit(1)
+
+    print("")
+    for q in quests:
+        cprint(str(q["id"]) + ". " + q["name"], GREEN)
+    cprint("b. Back", GREEN)
+    print("")
+    print("Choose a " + "side " * side_quest + "quest")
+    print("")
+    while True:
+        try:
+            i = handled_input("> ")
+            if i == "b":
+                print("")
+                return
+            qid = int(i)
+            quest(side_quest, qid)
+        except(ValueError):
+            cprint("Not a quest ID", RED)
+            print("")
 
 
 def status():
+    pass
+
+
+def quest(side_quest, qid):
     pass
 
 
