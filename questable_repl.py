@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import sys
+import questable
+from cprint import RED, GREEN, cprint
 
 
 def handled_input(prompt):
@@ -25,9 +27,18 @@ def status():
     pass
 
 
-while True:
-    print("Welcome to questable.")
+cprint("Welcome to questable.", GREEN)
+print("")
+cprint("Trying to authenticate token . . . ", GREEN)
+if questable.auth():
+    cprint("Authentication successful", GREEN)
     print("")
+else:
+    cprint("Authentication failed! Please check your Token / API URL", RED)
+    sys.exit(1)
+
+
+while True:
     print("Choose an option")
     print("1. Add a quest")
     print("2. Add a side quest")
@@ -46,7 +57,7 @@ while True:
                 raise ValueError
             break
         except ValueError:
-            print("Invalid Option")
+            cprint("Invalid Option", RED)
             print("")
     if i == 1:
         add_quest(False)
