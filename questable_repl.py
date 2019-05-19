@@ -55,7 +55,18 @@ def list_quest(side_quest):
 
 
 def status():
-    pass
+    player = questable.player()
+    cprint("""
+XP: {}
+Quests: {}/{}
+Side Quests: {}/{}
+           """.format(
+               player["xp"],
+               player["quests_completed"],
+               player["total_quests"],
+               player["side_quests_completed"],
+               player["total_side_quests"]
+           ), GREEN)
 
 
 def quest(side_quest, qid, state):
@@ -95,17 +106,17 @@ State: {}
         return
     elif i == "1":
         mark_as_done(side_quest, qid)
-        status["update"] = True
+        state["update"] = True
     elif i == "2":
         edit_name(side_quest, qid)
-        status["update"] = True
+        state["update"] = True
     elif i == "3":
         change_priority(side_quest, qid)
     elif i == "4":
         change_difficulty(side_quest, qid)
     elif i == "5":
         delete_quest(side_quest, qid)
-        status["update"] = True
+        state["update"] = True
     else:
         cprint("Invalid Option", RED)
 

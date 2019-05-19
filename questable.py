@@ -37,3 +37,12 @@ def get_quest(side_quest, qid):
     }
     res = requests.get(url, parameters)
     return res.json()
+
+
+def player():
+    url = config.api_url + "player"
+    parameters = {
+        "token": config.token
+    }
+    res = requests.get(url, parameters)
+    return res.json()
