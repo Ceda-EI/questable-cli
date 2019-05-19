@@ -24,3 +24,16 @@ def get_quests(side_quest):
     if res.status_code != 200:
         return False
     return res.json()
+
+
+def get_quest(side_quest, qid):
+    if side_quest:
+        url = config.api_url + "get_side_quest"
+    else:
+        url = config.api_url + "get_quest"
+    parameters = {
+        "token": config.token,
+        "id": qid
+    }
+    res = requests.get(url, parameters)
+    return res.json()
