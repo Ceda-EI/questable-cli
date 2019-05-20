@@ -9,8 +9,10 @@ def handled_input(prompt):
     try:
         i = input(prompt)
     except EOFError:
+        print("")
         sys.exit(0)
     except KeyboardInterrupt:
+        print("")
         sys.exit(0)
     return i
 
@@ -25,6 +27,7 @@ def list_quest(side_quest):
 
     state = {"update": False}
     quests = questable.get_quests(side_quest)
+    quests.sort(key=lambda i: (i["priority"], -i["id"]), reverse=True)
     while True:
         if state["update"]:
             quests = questable.get_quests(side_quest)
@@ -34,11 +37,11 @@ def list_quest(side_quest):
             sys.exit(1)
 
         print("")
-        for q in quests:
-            cprint(str(q["id"]) + ". " + q["name"], GREEN)
-        cprint("b. Back", GREEN)
+        cprint("Choose a " + "side " * side_quest + "quest", GREEN)
         print("")
-        cprint("Choose a " + "side " * side_quest + "quest", YELLOW)
+        for q in quests:
+            cprint(str(q["id"]) + ". " + q["name"], YELLOW)
+        cprint("b. Back", YELLOW)
         print("")
         while True:
             try:
@@ -153,7 +156,8 @@ else:
 
 
 while True:
-    cprint("Choose an option", YELLOW)
+    cprint("Choose an option", GREEN)
+    print("")
     cprint("1. Add a quest", YELLOW)
     cprint("2. Add a side quest", YELLOW)
     cprint("3. List quests", YELLOW)
