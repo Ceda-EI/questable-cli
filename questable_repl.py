@@ -6,15 +6,16 @@ from cprint import RED, GREEN, YELLOW, cprint
 
 
 def handled_input(prompt):
-    try:
-        i = input(prompt)
-    except EOFError:
-        print("")
-        sys.exit(0)
-    except KeyboardInterrupt:
-        print("")
-        sys.exit(0)
-    return i
+    while True:
+        try:
+            i = input(prompt)
+        except EOFError:
+            print("")
+            sys.exit(0)
+        except KeyboardInterrupt:
+            print("")
+            continue
+        return i
 
 
 def add_quest(side_quest):
