@@ -1,5 +1,17 @@
 import requests
-import config
+
+
+class Config():
+    pass
+
+
+config = Config()
+
+
+def init(cfg):
+    global config
+    config.api_url = cfg["api_url"].rstrip("/") + "/"
+    config.token = cfg["token"]
 
 
 def auth():

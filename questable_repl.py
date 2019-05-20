@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import questable
+import argparse
 from cprint import RED, GREEN, YELLOW, cprint
 
 
@@ -187,6 +189,76 @@ def delete_quest(side_quest, qid):
     pass
 
 
+# Parse command line arguments
+parser = argparse.ArgumentParser(
+    description="Questable CLI interface.",
+    epilog="CLI parameters taken priority over config."
+)
+parser.add_argument('--api-url', '-a', nargs=1, help="URL for api endpoint")
+parser.add_argument('--token', '-t', nargs=1,
+                    help="Token obtained from questable bot")
+parser.add_argument('--config', '-c', nargs=1, help="Path to config file")
+args = parser.parse_args()
+
+config_from_args = {}
+if args.api_url is not None:
+    config_from_args['api_url'] = args.api_url[0]
+
+if args.token is not None:
+    config_from_args['token'] = args.token[0]
+
+if args.config:
+    config_file_path = os.path.expanduser(args.config[0])
+    if not os.path.isfile(config_file_path):
+        cprint("Config file does not exist", RED)
+        sys.exit(2)
+else:
+    config_file_path = os.path.expanduser('~/.config/questable.conf')
+
+
+# Parse config file
+config_from_file = {}
+
+if os.path.isfile(config_file_path):
+    with open(config_file_path) as f:
+        for i in f.readlines():
+            i = i.strip()
+            if len(i) == 0:
+                continue
+            if i[0] == "#":
+                continue
+            params = i.split("=")
+            if len(params) < 2:
+                continue
+            config_from_file[params[0].strip()] = "=".join(params[1:]).strip()
+
+# Merge configs
+config = {**config_from_file, **config_from_args}
+
+
+prompt_for_write = False
+if 'api_url' not in config:
+    prompt_for_write = True
+    cprint("API URL not found", RED)
+    print("")
+    cprint("Enter API URL", GREEN)
+    print("")
+    config["api_url"] = handled_input("> ")
+    print("")
+
+
+if 'token' not in config:
+    prompt_for_write = True
+    cprint("Token not found", RED)
+    print("")
+    cprint("Enter Token", GREEN)
+    print("")
+    config["token"] = handled_input("> ")
+    print("")
+
+
+questable.init(config)
+
 cprint("Welcome to questable.", GREEN)
 print("")
 cprint("Trying to authenticate token . . . ", GREEN)
@@ -197,6 +269,19 @@ else:
     cprint("Authentication failed! Please check your Token / API URL", RED)
     sys.exit(1)
 
+# Prompt to write config settings
+if prompt_for_write:
+    cprint("Do you want to write config?", YELLOW)
+    print("")
+    write_config = True if handled_input("y/N > ").lower() == "y" else False
+    if write_config:
+        if not os.path.isdir(os.path.dirname(config_file_path)):
+            os.makedirs(os.path.dirname(config_file_path))
+        with open(config_file_path, 'w') as f:
+            f.write("# API URL for the questable server\n")
+            f.write("api_url = " + questable.config.api_url + "\n")
+            f.write("# Token provided by questable bot\n")
+            f.write("token = " + questable.config.token + "\n")
 
 while True:
     cprint("Choose an option", GREEN)
