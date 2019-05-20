@@ -18,7 +18,49 @@ def handled_input(prompt):
 
 
 def add_quest(side_quest):
-    pass
+    print("")
+    cprint("Enter name of " + "side " * side_quest + "quest", GREEN)
+    print("")
+    name = handled_input("> ")
+    print("")
+    cprint("Choose importance", GREEN)
+    print("")
+    cprint("1. Low", YELLOW)
+    cprint("2. Medium", YELLOW)
+    cprint("3. High", YELLOW)
+    print("")
+    while True:
+        try:
+            priority = int(handled_input("> "))
+            if priority not in [1, 2, 3]:
+                raise ValueError
+            break
+        except ValueError:
+            cprint("Invalid Value", RED)
+    cprint("Choose difficulty", GREEN)
+    print("")
+    cprint("1. Low", YELLOW)
+    cprint("2. Medium", YELLOW)
+    cprint("3. High", YELLOW)
+    print("")
+    while True:
+        try:
+            difficulty = int(handled_input("> "))
+            if difficulty not in [1, 2, 3]:
+                raise ValueError
+            break
+        except ValueError:
+            cprint("Invalid Value", RED)
+
+    print("")
+    q = questable.add_quest(side_quest, name, priority, difficulty)
+    if 'error' in q:
+        cprint("Failed adding " + "side " * side_quest + "quest", RED)
+        cprint(q["error"], RED)
+    else:
+        cprint("Added " + "side " * side_quest + "quest", GREEN)
+        cprint("Side" * side_quest + "Quest ID: " + str(q["id"]), GREEN)
+    print("")
 
 
 def list_quest(side_quest):

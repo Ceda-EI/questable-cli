@@ -46,3 +46,18 @@ def player():
     }
     res = requests.get(url, parameters)
     return res.json()
+
+
+def add_quest(side_quest, name, priority, difficulty):
+    if side_quest:
+        url = config.api_url + "add_side_quest"
+    else:
+        url = config.api_url + "add_quest"
+    data = {
+        "token": config.token,
+        "name": name,
+        "priority": priority,
+        "difficulty": difficulty
+    }
+    res = requests.post(url, data=data)
+    return res.json()
