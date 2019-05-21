@@ -1,5 +1,7 @@
 # Questable REPL
 
+[![asciicast](https://asciinema.org/a/247494.svg)](https://asciinema.org/a/247494)
+
 # Usage
 
 + `git clone http://gitlab.com/questable/questable-cli`
