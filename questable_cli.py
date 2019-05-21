@@ -15,6 +15,12 @@ parser.add_argument(
     help="Token obtained from questable bot"
 )
 
+parser.add_argument(
+    '--config',
+    '-c',
+    help="Path to config file"
+)
+
 subparsers = parser.add_subparsers()
 
 # Add subparser for list_quests
@@ -112,5 +118,23 @@ subparser_update_quest.add_argument(
     help="Mark quest as done"
 )
 
+# Configure subparser for delete_quest
+subparser_delete_quest = subparsers.add_parser(
+    'delete_quest',
+    description="Delete quest or side quest",
+    help="Delete Quest"
+)
+
+subparser_delete_quest.add_argument(
+    '--side-quests',
+    '-s',
+    action="store_true",
+    help="Add side quests instead"
+)
+
+subparser_delete_quest.add_argument(
+    'id',
+    help="ID of quest"
+)
 # Parse arguments
 parser.parse_args()
