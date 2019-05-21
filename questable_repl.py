@@ -312,11 +312,9 @@ prompt_for_write = False
 if 'api_url' not in config:
     prompt_for_write = True
     cprint("API URL not found", RED)
+    cprint("Using default: https://api.questable.webionite.com", GREEN)
     print("")
-    cprint("Enter API URL", GREEN)
-    print("")
-    config["api_url"] = handled_input("> ")
-    print("")
+    config["api_url"] = "https://api.questable.webionite.com/"
 
 
 if 'token' not in config:
@@ -354,6 +352,7 @@ if prompt_for_write:
             f.write("api_url = " + questable.config.api_url + "\n")
             f.write("# Token provided by questable bot\n")
             f.write("token = " + questable.config.token + "\n")
+    print("")
 
 while True:
     cprint("Choose an option", GREEN)
