@@ -246,7 +246,19 @@ def change_difficulty(side_quest, qid):
 
 
 def delete_quest(side_quest, qid):
-    pass
+    upd = questable.delete_quest(side_quest, qid)
+    if 'error' in upd:
+        print("")
+        cprint("Could not delete " + "side " * side_quest + "quest", RED)
+        cprint(upd["error"], RED)
+        return
+
+    if upd['success']:
+        print("")
+        cprint("Deleted " + "side " * side_quest + "quest", GREEN)
+    else:
+        print("")
+        cprint("Could not delete " + "side " * side_quest + "quest", RED)
 
 
 # Parse command line arguments

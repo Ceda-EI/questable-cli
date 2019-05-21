@@ -97,3 +97,18 @@ def update_quest(side_quest, qid, name=None, priority=None, difficulty=None,
 
     res = requests.post(url, data=data)
     return res.json()
+
+
+def delete_quest(side_quest, qid):
+    if side_quest:
+        url = config.api_url + "delete_side_quest"
+    else:
+        url = config.api_url + "delete_quest"
+
+    data = {
+        "token": config.token,
+        "id": qid
+    }
+
+    res = requests.delete(url, data=data)
+    return res.json()
