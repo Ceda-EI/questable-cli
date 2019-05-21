@@ -26,7 +26,7 @@ def add_quest(side_quest):
     print("")
     name = handled_input("> ")
     print("")
-    cprint("Choose importance", GREEN)
+    cprint("Choose priority", GREEN)
     print("")
     cprint("1. Low", YELLOW)
     cprint("2. Medium", YELLOW)
@@ -176,22 +176,73 @@ def mark_as_done(side_quest, qid):
         cprint("Error marking " + "side "*side_quest + "quest as done!", RED)
         cprint(upd["error"], RED)
     else:
-        xp = (0 if side_quest else 55 + 10*upd["priority"] +
+        xp = ((0 if side_quest else 55) + 10*upd["priority"] +
               15*upd["difficulty"])
         cprint("Marked " + "side "*side_quest + "quest as done!", GREEN)
         cprint("Gained " + str(xp) + " XP", GREEN)
 
 
 def edit_name(side_quest, qid):
-    pass
+    print("")
+    cprint("Enter new name of " + "side " * side_quest + "quest", GREEN)
+    print("")
+    name = handled_input("> ")
+    print("")
+    upd = questable.update_quest(side_quest, qid, name=name)
+    if "error" in upd:
+        cprint("Error changing name", RED)
+        cprint(upd["error"], RED)
+    else:
+        cprint("Changed name ", GREEN)
 
 
 def change_priority(side_quest, qid):
+    print("")
+    cprint("Choose priority", GREEN)
+    print("")
+    cprint("1. Low", YELLOW)
+    cprint("2. Medium", YELLOW)
+    cprint("3. High", YELLOW)
+    print("")
+    while True:
+        try:
+            priority = int(handled_input("> "))
+            if priority not in [1, 2, 3]:
+                raise ValueError
+            break
+        except ValueError:
+            cprint("Invalid Value", RED)
     pass
+    upd = questable.update_quest(side_quest, qid, priority=priority)
+    if "error" in upd:
+        cprint("Error changing priority", RED)
+        cprint(upd["error"], RED)
+    else:
+        cprint("Changed priority", GREEN)
 
 
 def change_difficulty(side_quest, qid):
-    pass
+    print("")
+    cprint("Choose difficulty", GREEN)
+    print("")
+    cprint("1. Low", YELLOW)
+    cprint("2. Medium", YELLOW)
+    cprint("3. High", YELLOW)
+    print("")
+    while True:
+        try:
+            difficulty = int(handled_input("> "))
+            if difficulty not in [1, 2, 3]:
+                raise ValueError
+            break
+        except ValueError:
+            cprint("Invalid Value", RED)
+    upd = questable.update_quest(side_quest, qid, difficulty=difficulty)
+    if "error" in upd:
+        cprint("Error changing difficulty", RED)
+        cprint(upd["error"], RED)
+    else:
+        cprint("Changed difficulty", GREEN)
 
 
 def delete_quest(side_quest, qid):
