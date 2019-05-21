@@ -21,6 +21,7 @@ parser.add_argument(
     help="Path to config file"
 )
 
+
 subparsers = parser.add_subparsers()
 
 # Add subparser for list_quests
@@ -136,5 +137,13 @@ subparser_delete_quest.add_argument(
     'id',
     help="ID of quest"
 )
+
+# Configure subparser for status
+subparser_status = subparsers.add_parser(
+    'status',
+    description="Get status of player",
+    help="Get status of player"
+)
+
 # Parse arguments
 parser.parse_args()
