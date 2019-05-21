@@ -73,3 +73,27 @@ def add_quest(side_quest, name, priority, difficulty):
     }
     res = requests.post(url, data=data)
     return res.json()
+
+
+def update_quest(side_quest, qid, name=None, priority=None, difficulty=None,
+                 state=None):
+    if side_quest:
+        url = config.api_url + "update_side_quest"
+    else:
+        url = config.api_url + "update_quest"
+
+    data = {
+        "token": config.token,
+        "id": qid
+    }
+    if name:
+        data["name"] = name
+    if priority:
+        data["priority"] = priority
+    if difficulty:
+        data["difficulty"] = difficulty
+    if state:
+        data["state"] = state
+
+    res = requests.post(url, data=data)
+    return res.json()

@@ -170,7 +170,16 @@ State: {}
 
 
 def mark_as_done(side_quest, qid):
-    pass
+    upd = questable.update_quest(side_quest, qid, state=True)
+    print("")
+    if "error" in upd:
+        cprint("Error marking " + "side "*side_quest + "quest as done!", RED)
+        cprint(upd["error"], RED)
+    else:
+        xp = (0 if side_quest else 55 + 10*upd["priority"] +
+              15*upd["difficulty"])
+        cprint("Marked " + "side "*side_quest + "quest as done!", GREEN)
+        cprint("Gained " + str(xp) + " XP", GREEN)
 
 
 def edit_name(side_quest, qid):
