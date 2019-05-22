@@ -12,26 +12,32 @@ def handled_input(prompt):
         try:
             i = input(prompt)
         except EOFError:
-            print("")
+            print()
             sys.exit(0)
         except KeyboardInterrupt:
-            print("")
+            print()
             continue
         return i
 
 
+def clear():
+    if os.name == "nt":
+        os.system('cls')
+    else:
+        os.system('clear')
+
+
 def add_quest(side_quest):
-    print("")
     cprint("Enter name of " + "side " * side_quest + "quest", GREEN)
-    print("")
+    print()
     name = handled_input("> ")
-    print("")
+    clear()
     cprint("Choose priority", GREEN)
-    print("")
+    print()
     cprint("1. Low", YELLOW)
     cprint("2. Medium", YELLOW)
     cprint("3. High", YELLOW)
-    print("")
+    print()
     while True:
         try:
             priority = int(handled_input("> "))
@@ -40,12 +46,13 @@ def add_quest(side_quest):
             break
         except ValueError:
             cprint("Invalid Value", RED)
+    clear()
     cprint("Choose difficulty", GREEN)
-    print("")
+    print()
     cprint("1. Low", YELLOW)
     cprint("2. Medium", YELLOW)
     cprint("3. High", YELLOW)
-    print("")
+    print()
     while True:
         try:
             difficulty = int(handled_input("> "))
@@ -54,16 +61,15 @@ def add_quest(side_quest):
             break
         except ValueError:
             cprint("Invalid Value", RED)
-
-    print("")
+    clear()
     q = questable.add_quest(side_quest, name, priority, difficulty)
     if 'error' in q:
         cprint("Failed adding " + "side " * side_quest + "quest", RED)
         cprint(q["error"], RED)
     else:
         cprint("Added " + "side " * side_quest + "quest", GREEN)
-        cprint("Side" * side_quest + "Quest ID: " + str(q["id"]), GREEN)
-    print("")
+        cprint("Side " * side_quest + "Quest ID: " + str(q["id"]), GREEN)
+    print()
 
 
 def list_quest(side_quest):
@@ -76,36 +82,38 @@ def list_quest(side_quest):
     while True:
         if state["update"]:
             quests = questable.get_quests(side_quest)
+            quests.sort(key=lambda i: (i["priority"], -i["id"]), reverse=True)
             state["update"] = False
         if quests is False:
             cprint("Invalid Token!", RED)
             sys.exit(1)
 
-        print("")
         cprint("Choose a " + "side " * side_quest + "quest", GREEN)
-        print("")
+        print()
         for q in quests:
             cprint(str(q["id"]) + ". " + q["name"], YELLOW)
         cprint("b. Back", YELLOW)
-        print("")
+        print()
         while True:
             try:
                 i = handled_input("> ")
                 if i == "b":
-                    print("")
+                    clear()
                     return
                 qid = int(i)
+                clear()
                 quest(side_quest, qid, state)
                 break
             except(ValueError):
                 cprint("Not a quest ID", RED)
-                print("")
+                print()
+    clear()
 
 
 def status():
     player = questable.player()
-    cprint("""
-XP: {}
+    cprint(
+        """XP: {}
 Quests: {}/{}
 Side Quests: {}/{}
            """.format(
@@ -123,8 +131,7 @@ def quest(side_quest, qid, state):
         cprint(q["error"], RED)
         return
     cprint(
-        """
-ID: {}
+        """ID: {}
 Name: {}
 Difficulty: {}
 Priority: {}
@@ -138,8 +145,9 @@ State: {}
         ), GREEN)
     if q["state"] is True:
         cprint("b. Back", YELLOW)
-        print("")
+        print()
         handled_input("> ")
+        clear()
         return
 
     cprint("1. Mark as done", YELLOW)
@@ -151,18 +159,24 @@ State: {}
     cprint("", YELLOW)
     i = handled_input("> ")
     if i == "b":
+        clear()
         return
     elif i == "1":
+        clear()
         mark_as_done(side_quest, qid)
         state["update"] = True
     elif i == "2":
+        clear()
         edit_name(side_quest, qid)
         state["update"] = True
     elif i == "3":
+        clear()
         change_priority(side_quest, qid)
     elif i == "4":
+        clear()
         change_difficulty(side_quest, qid)
     elif i == "5":
+        clear()
         delete_quest(side_quest, qid)
         state["update"] = True
     else:
@@ -171,7 +185,6 @@ State: {}
 
 def mark_as_done(side_quest, qid):
     upd = questable.update_quest(side_quest, qid, state=True)
-    print("")
     if "error" in upd:
         cprint("Error marking " + "side "*side_quest + "quest as done!", RED)
         cprint(upd["error"], RED)
@@ -183,11 +196,10 @@ def mark_as_done(side_quest, qid):
 
 
 def edit_name(side_quest, qid):
-    print("")
     cprint("Enter new name of " + "side " * side_quest + "quest", GREEN)
-    print("")
+    print()
     name = handled_input("> ")
-    print("")
+    clear()
     upd = questable.update_quest(side_quest, qid, name=name)
     if "error" in upd:
         cprint("Error changing name", RED)
@@ -197,13 +209,12 @@ def edit_name(side_quest, qid):
 
 
 def change_priority(side_quest, qid):
-    print("")
     cprint("Choose priority", GREEN)
-    print("")
+    print()
     cprint("1. Low", YELLOW)
     cprint("2. Medium", YELLOW)
     cprint("3. High", YELLOW)
-    print("")
+    print()
     while True:
         try:
             priority = int(handled_input("> "))
@@ -212,8 +223,8 @@ def change_priority(side_quest, qid):
             break
         except ValueError:
             cprint("Invalid Value", RED)
-    pass
     upd = questable.update_quest(side_quest, qid, priority=priority)
+    clear()
     if "error" in upd:
         cprint("Error changing priority", RED)
         cprint(upd["error"], RED)
@@ -222,13 +233,12 @@ def change_priority(side_quest, qid):
 
 
 def change_difficulty(side_quest, qid):
-    print("")
     cprint("Choose difficulty", GREEN)
-    print("")
+    print()
     cprint("1. Low", YELLOW)
     cprint("2. Medium", YELLOW)
     cprint("3. High", YELLOW)
-    print("")
+    print()
     while True:
         try:
             difficulty = int(handled_input("> "))
@@ -238,6 +248,7 @@ def change_difficulty(side_quest, qid):
         except ValueError:
             cprint("Invalid Value", RED)
     upd = questable.update_quest(side_quest, qid, difficulty=difficulty)
+    clear()
     if "error" in upd:
         cprint("Error changing difficulty", RED)
         cprint(upd["error"], RED)
@@ -247,17 +258,14 @@ def change_difficulty(side_quest, qid):
 
 def delete_quest(side_quest, qid):
     upd = questable.delete_quest(side_quest, qid)
+    clear()
     if 'error' in upd:
-        print("")
         cprint("Could not delete " + "side " * side_quest + "quest", RED)
         cprint(upd["error"], RED)
         return
-
     if upd['success']:
-        print("")
         cprint("Deleted " + "side " * side_quest + "quest", GREEN)
     else:
-        print("")
         cprint("Could not delete " + "side " * side_quest + "quest", RED)
 
 
@@ -308,33 +316,34 @@ if os.path.isfile(config_file_path):
 config = {**config_from_file, **config_from_args}
 
 
+clear()
 prompt_for_write = False
 if 'api_url' not in config:
     prompt_for_write = True
     cprint("API URL not found", RED)
     cprint("Using default: https://api.questable.webionite.com", GREEN)
-    print("")
+    print()
     config["api_url"] = "https://api.questable.webionite.com/"
 
 
 if 'token' not in config:
     prompt_for_write = True
     cprint("Token not found", RED)
-    print("")
+    print()
     cprint("Enter Token", GREEN)
-    print("")
+    print()
     config["token"] = handled_input("> ")
-    print("")
+    print()
 
 
 questable.init(config)
 
 cprint("Welcome to questable.", GREEN)
-print("")
+print()
 cprint("Trying to authenticate token . . . ", GREEN)
 if questable.auth():
     cprint("Authentication successful", GREEN)
-    print("")
+    print()
 else:
     cprint("Authentication failed! Please check your Token / API URL", RED)
     sys.exit(1)
@@ -342,7 +351,7 @@ else:
 # Prompt to write config settings
 if prompt_for_write:
     cprint("Do you want to write config?", YELLOW)
-    print("")
+    print()
     write_config = True if handled_input("y/N > ").lower() == "y" else False
     if write_config:
         if not os.path.isdir(os.path.dirname(config_file_path)):
@@ -352,18 +361,18 @@ if prompt_for_write:
             f.write("api_url = " + questable.config.api_url + "\n")
             f.write("# Token provided by questable bot\n")
             f.write("token = " + questable.config.token + "\n")
-    print("")
+    print()
 
 while True:
     cprint("Choose an option", GREEN)
-    print("")
+    print()
     cprint("1. Add a quest", YELLOW)
     cprint("2. Add a side quest", YELLOW)
     cprint("3. List quests", YELLOW)
     cprint("4. List side quests", YELLOW)
     cprint("5. Check status", YELLOW)
     cprint("q. Quit", YELLOW)
-    print("")
+    print()
     while True:
         i = handled_input("> ")
         if i == "q":
@@ -375,14 +384,19 @@ while True:
             break
         except ValueError:
             cprint("Invalid Option", RED)
-            print("")
+            print()
     if i == 1:
+        clear()
         add_quest(False)
     elif i == 2:
+        clear()
         add_quest(True)
     elif i == 3:
+        clear()
         list_quest(False)
     elif i == 4:
+        clear()
         list_quest(True)
     elif i == 5:
+        clear()
         status()
