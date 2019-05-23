@@ -26,7 +26,16 @@ parser.add_argument(
 )
 
 
-subparsers = parser.add_subparsers()
+subparsers = parser.add_subparsers(dest='subparser')
+
+
+# Define function for handling list_quests
+def list_quests(args):
+    quests = questable.get_quests(args.side_quests)
+    quests.sort(key=lambda i: (i["priority"], -i["id"]), reverse=True)
+    for q in quests:
+        print(str(q["id"]) + ". " + q["name"])
+
 
 # Add subparser for list_quests
 subparser_list_quests = subparsers.add_parser(
@@ -40,6 +49,7 @@ subparser_list_quests.add_argument(
     action="store_true",
     help="Add side quests instead"
 )
+subparser_list_quests.set_defaults(func=list_quests)
 
 
 # Configure subparser for add_quest
@@ -198,3 +208,8 @@ questable.init(config)
 if not questable.auth():
     cprint("Authentication failed! Please check your Token / API URL", RED)
     sys.exit(1)
+
+if args.subparser:
+    args.func(args)
+else:
+    parser.print_help()
