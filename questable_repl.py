@@ -274,21 +274,20 @@ parser = argparse.ArgumentParser(
     description="Questable CLI interface.",
     epilog="CLI parameters taken priority over config."
 )
-parser.add_argument('--api-url', '-a', nargs=1, help="URL for api endpoint")
-parser.add_argument('--token', '-t', nargs=1,
-                    help="Token obtained from questable bot")
-parser.add_argument('--config', '-c', nargs=1, help="Path to config file")
+parser.add_argument('--api-url', '-a', help="URL for api endpoint")
+parser.add_argument('--token', '-t', help="Token obtained from questable bot")
+parser.add_argument('--config', '-c', help="Path to config file")
 args = parser.parse_args()
 
 config_from_args = {}
 if args.api_url is not None:
-    config_from_args['api_url'] = args.api_url[0]
+    config_from_args['api_url'] = args.api_url
 
 if args.token is not None:
-    config_from_args['token'] = args.token[0]
+    config_from_args['token'] = args.token
 
 if args.config:
-    config_file_path = os.path.expanduser(args.config[0])
+    config_file_path = os.path.expanduser(args.config)
     if not os.path.isfile(config_file_path):
         cprint("Config file does not exist", RED)
         sys.exit(2)

@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
 import argparse
+import questable
+import sys
+import os
+from cprint import cprint, RED
 
 # Configure parser for top level command
 parser = argparse.ArgumentParser(description="Questable CLI")
@@ -146,4 +150,51 @@ subparser_status = subparsers.add_parser(
 )
 
 # Parse arguments
-parser.parse_args()
+args = parser.parse_args()
+
+config_from_args = {}
+if args.api_url is not None:
+    config_from_args['api_url'] = args.api_url
+
+if args.token is not None:
+    config_from_args['token'] = args.token
+
+if args.config:
+    config_file_path = os.path.expanduser(args.config)
+    if not os.path.isfile(config_file_path):
+        cprint("Config file does not exist", RED)
+        sys.exit(2)
+else:
+    config_file_path = os.path.expanduser('~/.config/questable.conf')
+
+
+# Parse config file
+config_from_file = {}
+
+if os.path.isfile(config_file_path):
+    with open(config_file_path) as f:
+        for i in f.readlines():
+            i = i.strip()
+            if len(i) == 0:
+                continue
+            if i[0] == "#":
+                continue
+            params = i.split("=")
+            if len(params) < 2:
+                continue
+            config_from_file[params[0].strip()] = "=".join(params[1:]).strip()
+
+# Merge configs
+config = {**config_from_file, **config_from_args}
+
+if 'api_url' not in config:
+    cprint("API URL not found.", RED)
+    sys.exit(1)
+elif 'token' not in config:
+    cprint("TOKEN not found", RED)
+    sys.exit(1)
+
+questable.init(config)
+if not questable.auth():
+    cprint("Authentication failed! Please check your Token / API URL", RED)
+    sys.exit(1)
