@@ -41,6 +41,7 @@ def list_quests(args):
 subparser_list_quests = subparsers.add_parser(
     'list_quests',
     description='List quests or subquests',
+    aliases=['lq', 'l'],
     help="List Quests"
 )
 subparser_list_quests.add_argument(
@@ -52,15 +53,35 @@ subparser_list_quests.add_argument(
 subparser_list_quests.set_defaults(func=list_quests)
 
 
+# Define function for handling add_quest
+def add_quest(args):
+    if args.priority not in [1, 2, 3]:
+        cprint("Invalid priority", RED)
+        sys.exit(2)
+
+    if args.difficulty not in [1, 2, 3]:
+        cprint("Invalid difficulty", RED)
+        sys.exit(2)
+
+    q = questable.add_quest(args.side_quest, args.name, args.priority,
+                            args.difficulty)
+    print("ID:", q["id"])
+    print("Name:", q["name"])
+    print("Difficulty:", ["Low", "Medium", "Hard"][q["difficulty"] - 1])
+    print("Priority:", ["Low", "Medium", "Hard"][q["priority"] - 1])
+    print("State:", "Completed" if q["state"] else "Incomplete")
+
+
 # Configure subparser for add_quest
 subparser_add_quest = subparsers.add_parser(
     'add_quest',
     description='Add quests or subquests',
+    aliases=['aq', 'a'],
     help="Add Quest"
 )
 
 subparser_add_quest.add_argument(
-    '--side-quests',
+    '--side-quest',
     '-s',
     action="store_true",
     help="Add side quests instead"
@@ -84,19 +105,22 @@ subparser_add_quest.add_argument(
     '--difficulty',
     '-d',
     required=True,
+    type=int,
     help="Difficulty of quest (1, 2, 3)"
 )
 
+subparser_add_quest.set_defaults(func=add_quest)
 
 # Configure subparser for update_quest
 subparser_update_quest = subparsers.add_parser(
     'update_quest',
     description="Update quests or side quest",
+    aliases=['uq', 'u'],
     help="Update Quest"
 )
 
 subparser_update_quest.add_argument(
-    '--side-quests',
+    '--side-quest',
     '-s',
     action="store_true",
     help="Update side quests instead"
@@ -123,6 +147,7 @@ subparser_update_quest.add_argument(
 subparser_update_quest.add_argument(
     '--difficulty',
     '-d',
+    type=int,
     help="Difficulty of quest (1, 2, 3)"
 )
 
@@ -137,11 +162,12 @@ subparser_update_quest.add_argument(
 subparser_delete_quest = subparsers.add_parser(
     'delete_quest',
     description="Delete quest or side quest",
+    aliases=['dq', 'd'],
     help="Delete Quest"
 )
 
 subparser_delete_quest.add_argument(
-    '--side-quests',
+    '--side-quest',
     '-s',
     action="store_true",
     help="Add side quests instead"
@@ -156,6 +182,7 @@ subparser_delete_quest.add_argument(
 subparser_status = subparsers.add_parser(
     'status',
     description="Get status of player",
+    aliases=['s'],
     help="Get status of player"
 )
 
