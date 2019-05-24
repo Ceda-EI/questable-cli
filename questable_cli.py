@@ -32,9 +32,21 @@ subparsers = parser.add_subparsers(dest='subparser')
 # Define function for handling list_quests
 def list_quests(args):
     quests = questable.get_quests(args.side_quests)
-    quests.sort(key=lambda i: (i["priority"], -i["id"]), reverse=True)
+    quests_sorted = [[], [], []]
     for q in quests:
-        print(str(q["id"]) + ". " + q["name"])
+        quests_sorted[3 - q["priority"]].append(q)
+
+    for count, group in enumerate(quests_sorted):
+        if len(group) > 0:
+            print("Priority: " + ["Hard", "Medium", "Low"][count])
+            print("")
+            print("ID\tDiff.\tName")
+        for q in group:
+            print(str(q["id"]) + "\t" +
+                  ["Low", "Medium", "Hard"][q["difficulty"] - 1] +
+                  "\t" + q["name"])
+        if len(group) > 0 and count < 2:
+            print()
 
 
 # Add subparser for list_quests
