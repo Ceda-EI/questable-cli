@@ -181,7 +181,14 @@ subparser_update_quest.set_defaults(func=update_quest)
 
 # Define function for handling delete_quest
 def delete_quest(args):
-    pass
+    q = questable.delete_quest(args.side_quest, args.id)
+    if 'error' in q:
+        cprint(q["error"], RED)
+        return
+    elif q["success"]:
+        print("Deletion successful!")
+    else:
+        cprint("Deletion unsuccessful!", RED)
 
 
 # Configure subparser for delete_quest
