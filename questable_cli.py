@@ -123,6 +123,12 @@ subparser_add_quest.add_argument(
 
 subparser_add_quest.set_defaults(func=add_quest)
 
+
+# Define function for handling update_quest
+def update_quest(args):
+    pass
+
+
 # Configure subparser for update_quest
 subparser_update_quest = subparsers.add_parser(
     'update_quest',
@@ -170,6 +176,14 @@ subparser_update_quest.add_argument(
     help="Mark quest as done"
 )
 
+subparser_update_quest.set_defaults(func=update_quest)
+
+
+# Define function for handling delete_quest
+def delete_quest(args):
+    pass
+
+
 # Configure subparser for delete_quest
 subparser_delete_quest = subparsers.add_parser(
     'delete_quest',
@@ -190,6 +204,19 @@ subparser_delete_quest.add_argument(
     help="ID of quest"
 )
 
+subparser_delete_quest.set_defaults(func=delete_quest)
+
+
+# Define function for handling status
+def status(args):
+    player = questable.player()
+    print("XP: " + str(player["xp"]))
+    print("Quests: " + str(player["quests_completed"]) + "/" +
+          str(player["total_quests"]))
+    print("Side Quests: " + str(player["side_quests_completed"]) + "/" +
+          str(player["total_side_quests"]))
+
+
 # Configure subparser for status
 subparser_status = subparsers.add_parser(
     'status',
@@ -197,6 +224,8 @@ subparser_status = subparsers.add_parser(
     aliases=['s'],
     help="Get status of player"
 )
+
+subparser_status.set_defaults(func=status)
 
 # Parse arguments
 args = parser.parse_args()
