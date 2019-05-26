@@ -67,14 +67,6 @@ subparser_list_quests.set_defaults(func=list_quests)
 
 # Define function for handling add_quest
 def add_quest(args):
-    if args.priority not in [1, 2, 3]:
-        cprint("Invalid priority", RED)
-        sys.exit(2)
-
-    if args.difficulty not in [1, 2, 3]:
-        cprint("Invalid difficulty", RED)
-        sys.exit(2)
-
     q = questable.add_quest(args.side_quest, args.name, args.priority,
                             args.difficulty)
     print("ID:", q["id"])
@@ -111,6 +103,7 @@ subparser_add_quest.add_argument(
     '-p',
     required=True,
     type=int,
+    choices=[1, 2, 3],
     help="Priority of quest (1, 2, 3)"
 )
 subparser_add_quest.add_argument(
@@ -118,6 +111,7 @@ subparser_add_quest.add_argument(
     '-d',
     required=True,
     type=int,
+    choices=[1, 2, 3],
     help="Difficulty of quest (1, 2, 3)"
 )
 
@@ -126,7 +120,18 @@ subparser_add_quest.set_defaults(func=add_quest)
 
 # Define function for handling update_quest
 def update_quest(args):
-    pass
+    if (args.difficulty is None and args.priority is None and args.name is None
+       and args.mark_as_done is False):
+        cprint("Nothing to do", RED)
+        sys.exit(2)
+    q = questable.update_quest(args.side_quest, args.id, args.name,
+                               args.priority, args.difficulty,
+                               args.mark_as_done)
+    print("ID:", q["id"])
+    print("Name:", q["name"])
+    print("Difficulty:", ["Low", "Medium", "Hard"][q["difficulty"] - 1])
+    print("Priority:", ["Low", "Medium", "Hard"][q["priority"] - 1])
+    print("State:", "Completed" if q["state"] else "Incomplete")
 
 
 # Configure subparser for update_quest
@@ -159,6 +164,7 @@ subparser_update_quest.add_argument(
     '--priority',
     '-p',
     type=int,
+    choices=[1, 2, 3],
     help="Priority of quest (1, 2, 3)"
 )
 
@@ -166,6 +172,7 @@ subparser_update_quest.add_argument(
     '--difficulty',
     '-d',
     type=int,
+    choices=[1, 2, 3],
     help="Difficulty of quest (1, 2, 3)"
 )
 
@@ -287,4 +294,4 @@ if not questable.auth():
 if args.subparser:
     args.func(args)
 else:
-    parser.print_help()
+    parser.print_usage()
