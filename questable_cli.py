@@ -244,6 +244,10 @@ subparser_status.set_defaults(func=status)
 # Parse arguments
 args = parser.parse_args()
 
+if args.subparser is None:
+    parser.print_usage()
+    sys.exit()
+
 config_from_args = {}
 if args.api_url is not None:
     config_from_args['api_url'] = args.api_url
@@ -291,7 +295,4 @@ if not questable.auth():
     cprint("Authentication failed! Please check your Token / API URL", RED)
     sys.exit(1)
 
-if args.subparser:
-    args.func(args)
-else:
-    parser.print_usage()
+args.func(args)
