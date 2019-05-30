@@ -38,12 +38,12 @@ def list_quests(args):
 
     for count, group in enumerate(quests_sorted):
         if len(group) > 0:
-            print("Priority: " + ["Hard", "Medium", "Low"][count])
+            print("Priority: " + ["High", "Medium", "Low"][count])
             print("")
             print("ID\tDiff.\tName")
         for q in group:
             print(str(q["id"]) + "\t" +
-                  ["Low", "Medium", "Hard"][q["difficulty"] - 1] +
+                  ["Easy", "Medium", "Hard"][q["difficulty"] - 1] +
                   "\t" + q["name"])
         if len(group) > 0 and count < 2:
             print()
@@ -71,8 +71,8 @@ def add_quest(args):
                             args.difficulty)
     print("ID:", q["id"])
     print("Name:", q["name"])
-    print("Difficulty:", ["Low", "Medium", "Hard"][q["difficulty"] - 1])
-    print("Priority:", ["Low", "Medium", "Hard"][q["priority"] - 1])
+    print("Difficulty:", ["Easy", "Medium", "Hard"][q["difficulty"] - 1])
+    print("Priority:", ["Low", "Medium", "High"][q["priority"] - 1])
     print("State:", "Completed" if q["state"] else "Incomplete")
 
 
@@ -129,8 +129,8 @@ def update_quest(args):
                                args.mark_as_done)
     print("ID:", q["id"])
     print("Name:", q["name"])
-    print("Difficulty:", ["Low", "Medium", "Hard"][q["difficulty"] - 1])
-    print("Priority:", ["Low", "Medium", "Hard"][q["priority"] - 1])
+    print("Difficulty:", ["Easy", "Medium", "Hard"][q["difficulty"] - 1])
+    print("Priority:", ["Low", "Medium", "High"][q["priority"] - 1])
     print("State:", "Completed" if q["state"] else "Incomplete")
 
 
